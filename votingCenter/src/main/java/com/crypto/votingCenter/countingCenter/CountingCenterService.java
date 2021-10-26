@@ -1,4 +1,4 @@
-package com.crypto.votingCenter.mobile;
+package com.crypto.votingCenter.countingCenter;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
@@ -30,13 +32,15 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 @Service
-public class MobileService {
+public class CountingCenterService {
 
 	@Autowired
 	private UserService userService;
 	@Autowired
 	private MailService mailService;
+
 	RSA rsa = new RSA();
+	
 	
 	public void getCertificate(HttpServletRequest request, HttpServletResponse response){
 		String privateEncryptionKeyDir ="../electionCommission/src/main/resources/keys/encryption/";
@@ -53,19 +57,28 @@ public class MobileService {
             	ex.printStackTrace();
             }
 		}
+		
 	}
 	
-	public void sendOTP(@RequestBody String request) throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
+	public String verifyBallot(@RequestBody String request) throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
 		String decryptedRequest=rsa.decrypt(request);
 		JsonObject requestJson = new Gson().fromJson(decryptedRequest, JsonObject.class);
-		String id=requestJson.get("id").getAsString();
-		String deviceID=requestJson.get("deviceID").getAsString();
-		User user=userService.getUser(id);
-		if(user.getDeviceID().equals(deviceID)) {
-			mailService.sendEmail(user.getEmail());
+		String ballotID=requestJson.get("ballotID").getAsString();
+		List<User> users = new ArrayList<User>();
+		userService.getAllUsers().forEach(i -> {
+			if(i.getBallotID().equals(ballotID)) {
+				users.add(i);
+			}
+		});
+		if(users.size()==1) {
+			User user = users.get(0);
+			String sign=rsa.signMessage(ballotID);
+			return "{\"Valid\":1,\"ballotID\":\""+ballotID+"\",\"signature\":\""+sign+"\"}";
 		}else {
-			System.out.println("DeviceID not valid");
+			System.out.println("invalid ballotID");
+			return "{\"Valid\":0,\"ballotID\":\""+ballotID+"\"}";
 		}
+			
 	}
 
 }

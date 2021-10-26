@@ -1,4 +1,4 @@
-package com.crypto.electionCommission.https;
+package com.crypto.votingCenter.https;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;

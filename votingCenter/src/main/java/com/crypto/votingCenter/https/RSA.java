@@ -1,4 +1,4 @@
-package com.crypto.electionCommission.https;
+package com.crypto.votingCenter.https;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Component;

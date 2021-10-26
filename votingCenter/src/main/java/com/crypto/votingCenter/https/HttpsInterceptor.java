@@ -1,4 +1,4 @@
-package com.crypto.electionCommission.https;
+package com.crypto.votingCenter.https;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

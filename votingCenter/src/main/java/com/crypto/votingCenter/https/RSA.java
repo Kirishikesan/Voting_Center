@@ -42,7 +42,7 @@ public class RSA {
     public String encrypt(Certificate certificate, String message){
         RSAPublicKey publicKey = (RSAPublicKey) certificate.getPublicKey();
 
-        BigInteger integerMessage = new BigInteger(message);
+        BigInteger integerMessage = new BigInteger(message.getBytes(StandardCharsets.UTF_8));
         byte[] encryptedBytes = integerMessage.modPow(publicKey.getPublicExponent(), publicKey.getModulus()).toByteArray();
 
         return Base64.getEncoder().encodeToString(encryptedBytes);
@@ -78,10 +78,10 @@ public class RSA {
         return Base64.getEncoder().encodeToString(signBytes);
     }
 
-    public boolean verifySignature(String message, Certificate signingCertificate){
+    public boolean verifySignature(String signature, String message, Certificate signingCertificate){
         RSAPublicKey publicVarifyKey = (RSAPublicKey) signingCertificate.getPublicKey();
 
-        byte[] decodeSign = Base64.getDecoder().decode(message);
+        byte[] decodeSign = Base64.getDecoder().decode(signature);
         BigInteger bigInteger = new BigInteger(decodeSign);
         byte[] varifyBytes = bigInteger.modPow(publicVarifyKey.getPublicExponent(), publicVarifyKey.getModulus()).toByteArray();
 

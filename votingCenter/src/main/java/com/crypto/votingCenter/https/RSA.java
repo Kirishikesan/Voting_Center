@@ -105,13 +105,4 @@ public class RSA {
     public String getSHA256Hash(String data){
         return DigestUtils.sha256Hex(data);
     }
-    
-    public byte[] getCertificate() {
-    	byte[] Byte= new byte[] {
-    			
-    	};
-    	return Byte;
-    }
-
-
 }

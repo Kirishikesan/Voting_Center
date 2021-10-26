@@ -24,15 +24,14 @@ public class MailService {
 	
    public String sendEmail(String email) {
 	  try {
-		  sendRandomID(email);
-	      return "Email sent successfully";
+		  return sendOTP(email);
 	  }catch(Exception e) {
 		  System.out.println(e);
-		  return "Error in sending email";
+		  return "";
 	  }
    }   
 
-   private void sendRandomID(String email) throws AddressException, MessagingException, IOException, NoSuchAlgorithmException {
+   private String sendOTP(String email) throws AddressException, MessagingException, IOException, NoSuchAlgorithmException {
 	   Properties props = new Properties();
 	   props.put("mail.smtp.auth", "true");
 	   props.put("mail.smtp.starttls.enable", "true");
@@ -41,7 +40,7 @@ public class MailService {
 	   
 	   byte[] seed = SecureRandom.getSeed(32);
 	   SecureRandom CSPRNG = new SecureRandom(seed);
-	   String randomID=Integer.toString(CSPRNG.nextInt(99999999));
+	   String randomID=Integer.toString(CSPRNG.nextInt(999999));
 	   
 
 	   
@@ -63,5 +62,6 @@ public class MailService {
 
 	   
 	   Transport.send(msg);   
+	   return randomID;
 	}
 }

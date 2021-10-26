@@ -19,8 +19,8 @@ public class UserService {
 		return users;
 	}
 
-	public User getUser(String id) {	
-		return userRepository.findById(id).get();
+	public User getUser(String randomID) {	
+		return userRepository.findById(randomID).get();
 	}
 
 	public void addUser(User user) {

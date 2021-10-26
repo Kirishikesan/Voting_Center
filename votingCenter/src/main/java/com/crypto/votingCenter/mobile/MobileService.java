@@ -1,5 +1,6 @@
 package com.crypto.votingCenter.mobile;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -55,17 +56,27 @@ public class MobileService {
 		}
 	}
 	
+	public void setSymmetricKey(@RequestBody String request) throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
+		String decryptedRequest=rsa.decrypt(request);
+		JsonObject requestJson = new Gson().fromJson(decryptedRequest, JsonObject.class);
+	}
+	
 	public void sendOTP(@RequestBody String request) throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
 		String decryptedRequest=rsa.decrypt(request);
 		JsonObject requestJson = new Gson().fromJson(decryptedRequest, JsonObject.class);
-		String id=requestJson.get("id").getAsString();
+		String RandomID=requestJson.get("randomID").getAsString();
 		String deviceID=requestJson.get("deviceID").getAsString();
-		User user=userService.getUser(id);
+		User user=userService.getUser(RandomID);
 		if(user.getDeviceID().equals(deviceID)) {
-			mailService.sendEmail(user.getEmail());
+			String OTP=mailService.sendEmail(user.getEmail());
+			FileWriter myWriter = new FileWriter("ClientData.txt");
+			myWriter.write(RandomID+" "+OTP);
+			myWriter.close();
 		}else {
 			System.out.println("DeviceID not valid");
 		}
 	}
+	
+	
 
 }

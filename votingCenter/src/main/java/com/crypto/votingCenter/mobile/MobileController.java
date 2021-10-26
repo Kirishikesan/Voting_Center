@@ -30,8 +30,14 @@ public class MobileController {
 		mobileService.getCertificate(request, response);
 	}
 	
+	@RequestMapping(method=RequestMethod.POST,value="/config/key")
+	public void setSymmetricKey(@RequestBody String request) throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
+		mobileService.setSymmetricKey(request);
+	}
+	
 	@RequestMapping(method=RequestMethod.POST,value="/config/getOTP")
 	public void sendRandomID(@RequestBody String request) throws InvalidKeyException, NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException, IOException {
 		mobileService.sendOTP(request);
 	}
+	
 }
